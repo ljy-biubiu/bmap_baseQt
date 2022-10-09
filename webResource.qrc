@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>line-simple.html</file>
+        <file>echarts.min.js</file>
+    </qresource>
+</RCC>
