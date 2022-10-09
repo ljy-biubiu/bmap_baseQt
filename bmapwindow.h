@@ -8,16 +8,16 @@
 #include "document.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui { class bmapWindow; }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+class bmapWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    bmapWindow(QWidget *parent = nullptr);
+    ~bmapWindow();
 
 private slots:
     void test2_clicked();
@@ -26,12 +26,13 @@ private slots:
     void onReceiveData(const QString &jsonString);
 
 private:
-    Ui::MainWindow *ui;
+    Ui::bmapWindow *ui;
     bool isLoaded;
     QWebEngineView* view;
     QWebChannel* channel;
     Document document;      // QT和Html通信的中间商
 
+    void onResizeEcharts();
     QJsonObject setUniqueJson(const QString &key, const QString &value);
 
 };

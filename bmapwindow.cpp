@@ -1,5 +1,5 @@
 #include "bmapwindow.h"
-#include "ui_mainwindow.h"
+#include "ui_bmapwindow.h"
 #include "qurl.h"
 
 #include <QtWebEngineWidgets/QWebEngineView>
@@ -9,9 +9,9 @@
 #include "qjsonarray.h"
 #include "qjsondocument.h"
 
-MainWindow::MainWindow(QWidget *parent)
+bmapWindow::bmapWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::bmapWindow)
 {
     ui->setupUi(this);
     channel = new QWebChannel(this);
@@ -28,13 +28,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     QObject::connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onBtnSend_clicked()));
     // web调用document类的槽函数，在函数内部发射信号，主函数on_receiveData进行相应，处理接收到的数据
-    QObject::connect(&document, &Document::receiveTextFromWeb, this, &MainWindow::onReceiveData);
+    QObject::connect(&document, &Document::receiveTextFromWeb, this, &bmapWindow::onReceiveData);
+    QObject::connect(this->ui->widget, SIGNAL(loadFinished(bool)), this, SLOT(onResizeEcharts()));
+
 
 }
 
 
 // 自定义一个jsonObject返回
-QJsonObject MainWindow::setUniqueJson(const QString &key, const QString &value)
+QJsonObject bmapWindow::setUniqueJson(const QString &key, const QString &value)
 {
     // 定义json
     QJsonObject json;
@@ -44,7 +46,7 @@ QJsonObject MainWindow::setUniqueJson(const QString &key, const QString &value)
     return json;
 }
 
-void MainWindow::onBtnSend_clicked() {
+void bmapWindow::onBtnSend_clicked() {
     // 获取用户输入的内容
     QString str = ui->lineEdit->text();
     ui->lineEdit->setText("");
@@ -61,7 +63,7 @@ void MainWindow::onBtnSend_clicked() {
 }
 
 // 处理Html发送过来的数据
-void MainWindow::onReceiveData(const QString &jsonString)
+void bmapWindow::onReceiveData(const QString &jsonString)
 {
     /* 这个字符串是Json类型的，不能直接使用，需要做转化 */
 
@@ -82,13 +84,26 @@ void MainWindow::onReceiveData(const QString &jsonString)
 }
 
 
+//动态控制地图大小
+void bmapWindow::onResizeEcharts()
+{
+    QJsonObject sizeData;
+    sizeData.insert("width", this->ui->widget->width()-20);
+    sizeData.insert("height", this->ui->widget->height()-20);
+    QString sizeStr = QJsonDocument(sizeData).toJson();
+    QString js = QString("setSize(%1)").arg(sizeStr);
+    this->ui->widget->page()->runJavaScript(js);
+}
 
-MainWindow::~MainWindow()
+
+
+
+bmapWindow::~bmapWindow()
 {
     delete ui;
 }
 
-void MainWindow::test2_clicked()
+void bmapWindow::test2_clicked()
 {
     QJsonObject seriesData;
     QJsonArray data1 = {1, 3, 9, 27, 81, 247, 741, 2223, 6669};
@@ -101,7 +116,7 @@ void MainWindow::test2_clicked()
     ui->widget->page()->runJavaScript(js);
 }
 
-void MainWindow::test3_clicked()
+void bmapWindow::test3_clicked()
 {
     isLoaded = true;
     QJsonObject sizeData;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>bmapWindow</class>
+ <widget class="QMainWindow" name="bmapWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>bmapWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWebEngineView" name="widget" native="true">
@@ -19,8 +19,8 @@
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>761</width>
-      <height>481</height>
+      <width>951</width>
+      <height>511</height>
      </rect>
     </property>
    </widget>
