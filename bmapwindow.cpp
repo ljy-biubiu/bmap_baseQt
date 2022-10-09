@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "bmapwindow.h"
 #include "ui_mainwindow.h"
 #include "qurl.h"
 
@@ -18,36 +18,18 @@ MainWindow::MainWindow(QWidget *parent)
     // 向web客户端注册对象，使得web客户端可以通过该对象调用QT的槽函数
     // 参数一：web端使用的标识(可以乱写，但必须与web中对应)    参数二：传送过去的QT对象
     channel->registerObject(QString::fromLocal8Bit("doc"), &document);
-    QObject::connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onBtnSend_clicked()));
-    // web调用document类的槽函数，在函数内部发射信号，主函数on_receiveData进行相应，处理接收到的数据
-    QObject::connect(&document, &Document::receiveTextFromWeb, this, &MainWindow::onReceiveData);
-
-    //view = new QWebEngineView(this);
-    // 设置显示的html没有上下文菜单
-    //view->setContextMenuPolicy(Qt::NoContextMenu);
 
     // 设置QWebChannel，打通与JavaScript的联系
     ui->widget->page()->setWebChannel(channel);
 
-
-
     // 设置显示的网页链接
-    ui->widget->setUrl(QUrl("file://"+QFileInfo("/home/ljy/input_messages_to_qt.html").absoluteFilePath()));
+    ui->widget->setUrl(QUrl("qrc:/map-polygon.html"));
+    //ui->widget->setUrl(QUrl("qrc:/input_messages_to_qt.html"));
 
+    QObject::connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onBtnSend_clicked()));
+    // web调用document类的槽函数，在函数内部发射信号，主函数on_receiveData进行相应，处理接收到的数据
+    QObject::connect(&document, &Document::receiveTextFromWeb, this, &MainWindow::onReceiveData);
 
-
-
-    // ui->textEdit->setReadOnly(true);
-
-//    QString baseUrlRobot = "/home/ljy/line-simple.html";
-//    QFile fileRobot(baseUrlRobot);
-//    if (!fileRobot.open(QIODevice::ReadOnly))
-//    {
-//        return;
-//    }
-
-//    ui->widget->setContextMenuPolicy(Qt::NoContextMenu);
-//    ui->widget->load(QUrl("file://"+QFileInfo("/home/ljy/map-polygon.html").absoluteFilePath()));
 }
 
 
@@ -63,7 +45,6 @@ QJsonObject MainWindow::setUniqueJson(const QString &key, const QString &value)
 }
 
 void MainWindow::onBtnSend_clicked() {
-    qDebug()<<"sssssssssssssssssssssssss";
     // 获取用户输入的内容
     QString str = ui->lineEdit->text();
     ui->lineEdit->setText("");
@@ -97,10 +78,15 @@ void MainWindow::onReceiveData(const QString &jsonString)
     // 根据相同的键值获取数据，并显示到QTextEdit中
     QJsonValue value = jsonObject.value("key");
     //ui->textEdit->append(value.toString());
-    qDebug()<<"receive datas";
+    qDebug()<<"receive datas :"<<value.toString();
 }
 
 
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
 
 void MainWindow::test2_clicked()
 {
@@ -124,10 +110,4 @@ void MainWindow::test3_clicked()
     QString sizeStr = QJsonDocument(sizeData).toJson();
     QString js = QString("setSize(%1)").arg(sizeStr);
     ui->widget->page()->runJavaScript(js);
-}
-
-
-MainWindow::~MainWindow()
-{
-    delete ui;
 }

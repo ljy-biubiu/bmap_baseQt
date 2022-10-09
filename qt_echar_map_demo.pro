@@ -18,14 +18,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     document.cpp \
     main.cpp \
-    mainwindow.cpp
+    bmapwindow.cpp
 
 HEADERS += \
     document.h \
-    mainwindow.h
+    bmapwindow.h
 
 FORMS += \
-    mainwindow.ui
+    bmapwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

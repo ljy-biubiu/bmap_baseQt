@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "bmapwindow.h"
 
 #include <QApplication>
 
